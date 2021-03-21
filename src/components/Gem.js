@@ -62,7 +62,7 @@ const Gem = (props) => {
 
     return (
         <div className="gem-card">
-            <Accordion style={{width: '200px', borderRadius: '15px', display: 'flex', flexDirection: 'column'}}>
+            <Accordion style={{width: '250px', borderRadius: '15px', display: 'flex', flexDirection: 'column'}}>
                 <AccordionSummary
                     style={{
                         display: 'flex',
@@ -70,18 +70,20 @@ const Gem = (props) => {
                         alignItems: 'center',
                         justifyContent: 'center'
                     }}>
-                    <img style={{ maxWidth: "200px", borderRadius: '15px', padding: "10px", background: `rgb(${red}, ${green}, ${blue})`}} src={gemImage} alt=""/>
+                    <img style={{ maxWidth: "250px", justifyContent: 'center', borderRadius: '15px', padding: "10px", background: `rgb(${red}, ${green}, ${blue})`}} src={gemImage} alt=""/>
                 </AccordionSummary>
-                <AccordionDetails className="card-details">
-                    <h1 className="gem-name" style={{ padding: '5px', textAlign: 'center' }}>{props.data[0]}</h1>
-                    <h5 className='bold'>
-                        Owner: {owner}...
-                    </h5>
-                    <h6>Red: {red}</h6>
-                    <h6>Green: {green}</h6>
-                    <h6>Blue: {blue}</h6>
-                    <h6>Type: {gemType}</h6>
-                    <h6>Cut: {gemCut}</h6>
+                <AccordionDetails className="card-details" style={{padding: '0'}} >
+                    <div style={{maxHeight: '100px', overflowY: 'scroll', marginBottom: '5px', width: '90%'}}>
+                    <h1 className="gem-name" style={{ fontSize: '18px', padding: '5px', textAlign: 'center' }}>{props.data[0]}</h1>
+                        <h5 className='bold'>
+                            Owner: {owner}...
+                        </h5>
+                        <h6>Red: {red}</h6>
+                        <h6>Green: {green}</h6>
+                        <h6>Blue: {blue}</h6>
+                        <h6>Type: {gemType}</h6>
+                        <h6>Cut: {gemCut}</h6>
+                    </div>
                 </AccordionDetails>
             </Accordion>
         </div>

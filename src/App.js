@@ -76,12 +76,14 @@ function App() {
         <h1 className="heading">Existing Treasure's</h1>
         <Grid container
           style={{display: 'flex', width: '100%', margin: '0'}} 
-          spacing={0} 
+          spacing={2} 
           align="center" 
           justify="center">
           {complexGemData.map((gem, index) => (
             <Grid item key={index}>
-              <Gem data={gem.data} account={metaMaskAccounts} owner={gem.owner}/>
+              <div>
+                <Gem data={gem.data} account={metaMaskAccounts} owner={gem.owner}/>
+              </div>
             </Grid>
           ))}
         </Grid>
