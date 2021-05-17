@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Web3 from 'web3';
 import { GEMS_ABI, GEMS_ABI_ADDRESS } from './config.js';
 import Gem from './components/Gem';
-import { TextField, Button, Grid } from '@material-ui/core';
+import { AppBar, Toolbar, TextField, Button, Grid } from '@material-ui/core';
 import Truncate from 'react-truncate';
 import './style.css';
+import { useDispatch, useSelector } from 'react-redux';
+import Navbar from './components/Navbar'
+import Store from './components/Store'
+import Account from './components/Account'
+import { getWeb3Data } from './actions/index'
 
 
 function App() {
+  const dispatch = useDispatch();
+  const gemState = useSelector(state => state.rootReducer)
   const [complexGemData, setComplexGemData] = useState([]);
   const [newName, setNewName] = useState()
   const [totalSupply, setTotalSupply] = useState();
   const [metaMaskAccounts, setMetaMaskAccounts] = useState();
   const [gemsContract, setGemsContract] = useState();
-  // const [gemOwner, setGemOwner] = useState([]);
-  // const [gemData, setGemData] = useState([]);
   
   useEffect(() => {
     loadBlockChainData();
@@ -43,9 +49,10 @@ function App() {
   
   async function loadGemData(totalSupply) {
     for (let i = 0; i < totalSupply; i++) {
-      const newGemData = await gemsContract.methods.getGemOverview(i).call();                        
+      const newGemColorData = await gemsContract.methods.getGemColorOverview(i).call();                        
+      const newGemCutData = await gemsContract.methods.getGemOverview(i).call();                        
       const gemOwner = await gemsContract.methods.ownerOf(i).call();
-      setComplexGemData(prevState => [...prevState, {id: i, owner: gemOwner, data: newGemData}]);
+      setComplexGemData(prevState => [...prevState, {id: i, owner: gemOwner, colorData: newGemColorData, cutData: newGemCutData}]);
     }
     return complexGemData;
   }
@@ -57,36 +64,53 @@ function App() {
   
   const createNewGem = async (e) => {
     e.preventDefault();
-    const createdGem = await gemsContract.methods.requestNewGemRandom(52, newName).send({ from:metaMaskAccounts });
+    const createdGem = await gemsContract.methods.requestNewGemRandom(52).send({ from:metaMaskAccounts, value:10000000000000000});
     return createdGem;
   }
 
+  const openBoosterPack = async (e) => {
+    e.preventDefault();
+    const boosterPack = await gemsContract.methods.openBoosterPack(52).send({ from:metaMaskAccounts, value:50000000000000000});
+    return boosterPack;
+  }
+
   return (
-    <div className="App">
-      <h1>Welcome to CryptoTreasure!</h1>
-      <h3>Account: <Truncate lines={5}>{metaMaskAccounts}</Truncate></h3>
-      <div>
-        <form onSubmit={(e) => createNewGem(e)}>
-          <TextField className='create-gem-input' type="text" placeholder="Enter a New Gem Name" onChange={e => updateGemName(e)}/>
-          <Button variant='contained' type='submit'>Open Treasure</Button >
-        </form>
-      </div>
-      {/* <Button variant='contained' onClick={() => loadGemData(totalSupply)}>Fetch</Button> */}
-      <div>
-        <h1 className="heading">Existing Treasure's</h1>
-        <Grid container
-          style={{display: 'flex', width: '100%', margin: '0'}} 
-          spacing={0} 
-          align="center" 
-          justify="center">
-          {complexGemData.map((gem, index) => (
-            <Grid item key={index}>
-              <Gem data={gem.data} account={metaMaskAccounts} owner={gem.owner}/>
+    <Router>
+      <Switch>
+        <div className="App">
+          <Route path='/' exact>
+            <div className='navbar'>
+              <Navbar account={metaMaskAccounts}/>
+            </div>
+          </Route>
+          <Route path='/store'>
+            <Navbar account={metaMaskAccounts} />
+            <Store account={metaMaskAccounts} contract={gemsContract}/>
+          </Route>
+          <Route path='/gallery'>
+            <Navbar account={metaMaskAccounts} />
+            <h1 className="heading">Existing Treasure's</h1>
+            <Grid container
+              style={{display: 'flex', width: '100%', margin: '0'}} 
+              spacing={0} 
+              align="center" 
+             justify="center">
+                {complexGemData.map((gem, index) => (
+                  <Grid item key={index}>
+                    <div>
+                      <Gem index={index} data={gem.colorData} cutData={gem.cutData} account={metaMaskAccounts} owner={gem.owner}/>
+                    </div>
+                  </Grid>
+                ))}
             </Grid>
-          ))}
-        </Grid>
+          </Route>
+          <Route path='/account'>
+            <Navbar account={metaMaskAccounts} />
+            <Account gemArray={complexGemData} contract={gemsContract} account={metaMaskAccounts}/>
+          </Route>
         </div>
-    </div>
+      </Switch>
+    </Router>
   );
 }
 

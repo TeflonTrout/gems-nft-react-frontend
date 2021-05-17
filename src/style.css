@@ -8,9 +8,6 @@
 }
 
 .App {
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
   background-color: lightgray;
   color: black;
   display: -webkit-box;
@@ -20,11 +17,9 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
+  z-index: -1;
 }
 
 .App .heading {
@@ -92,5 +87,82 @@
       -ms-flex-pack: center;
           justify-content: center;
   width: 100%;
+}
+
+.navbar {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  background: black;
+  color: lightgray;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 5px;
+  z-index: 10;
+}
+
+.navbar button {
+  color: black;
+  background: lightgray;
+}
+
+.store-page {
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: transparent;
+  z-index: 1;
+}
+
+.store-page h2 {
+  padding: 5px;
+}
+
+.store-page .video-background {
+  position: fixed;
+  z-index: 0;
+  width: 100%;
+}
+
+.store-page .purchase-form {
+  z-index: 1;
+  color: black;
+  background: rgba(255, 255, 255, 0.8);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  text-align: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 15px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  border-radius: 15px;
+}
+
+.store-page .purchase-form button {
+  background: black;
+  color: white;
 }
 /*# sourceMappingURL=Style.css.map */
