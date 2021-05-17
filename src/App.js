@@ -91,7 +91,7 @@ function App() {
             <Navbar account={metaMaskAccounts} />
             <h1 className="heading">Existing Treasure's</h1>
             <Grid container
-              style={{display: 'flex', width: '100%', margin: '0'}} 
+              style={{display: 'flex', width: '100%', backgroundColor: 'lightgrey', margin: '0'}} 
               spacing={0} 
               align="center" 
              justify="center">

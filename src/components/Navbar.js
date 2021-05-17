@@ -13,7 +13,7 @@ const Navbar = (props) => {
             <Link to='/' style={{color: 'lightgrey'}}>
                 <h1>CryptoTreasures</h1>
             </Link>
-            <h3>Account: <Truncate lines={3}>{props.account}</Truncate></h3>
+            <h3>Account: {props.account ? props.account.slice(0,8) : ""}...</h3>
             <Link to='/store'>
                 <Button variant='contained' color='primary' disableElevation>
                     Store
