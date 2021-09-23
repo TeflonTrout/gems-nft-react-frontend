@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Web3 from 'web3';
 import { GEMS_ABI, GEMS_ABI_ADDRESS } from './config.js';
 import Gem from './components/Gem';
-import { AppBar, Toolbar, TextField, Button, Grid } from '@material-ui/core';
-import Truncate from 'react-truncate';
+import { Grid } from '@material-ui/core';
 import './style.css';
 import { useDispatch, useSelector } from 'react-redux';
 import Navbar from './components/Navbar'
@@ -23,39 +22,38 @@ function App() {
   const [gemsContract, setGemsContract] = useState();
   
   useEffect(() => {
-    loadBlockChainData();
+    const loadBlockChainData = async () => {
+      try {
+        const web3 = new Web3(Web3.givenProvider);
+        const gemsContract = new web3.eth.Contract(GEMS_ABI, GEMS_ABI_ADDRESS);
+        setGemsContract(gemsContract);
+        const totalGemSupply = await gemsContract.methods.totalSupply().call();
+        setTotalSupply(totalGemSupply)
+        const accounts = await web3.eth.getAccounts()
+        setMetaMaskAccounts(accounts[0]);
+      } catch (e) {
+        console.error(e)
+      }
+    }  
+    loadBlockChainData()
   }, [])
   
   useEffect(() => {
+    const loadGemData = async (totalSupply) => {
+      for (let i = 0; i < totalSupply; i++) {
+          try {
+          const newGemColorData = await gemsContract.methods.getGemColorOverview(i).call();                        
+          const newGemCutData = await gemsContract.methods.getGemOverview(i).call();                        
+          const gemOwner = await gemsContract.methods.ownerOf(i).call();
+          setComplexGemData(prevState => [...prevState, {id: i, owner: gemOwner, colorData: newGemColorData, cutData: newGemCutData}]);
+          return complexGemData
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    }
     loadGemData(totalSupply);
   }, [totalSupply])
-
-  async function loadBlockChainData() {
-    const web3 = new Web3(Web3.givenProvider);
-    if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum);
-      window.ethereum.enable();
-      const gemsContract = new web3.eth.Contract(GEMS_ABI, GEMS_ABI_ADDRESS);
-      setGemsContract(gemsContract);
-      const totalGemSupply = await gemsContract.methods.totalSupply().call();
-      setTotalSupply(totalGemSupply)
-      const accounts = await web3.eth.getAccounts()
-      setMetaMaskAccounts(accounts[0]);
-      return true;
-    } else {
-      return false;
-    };
-  }  
-  
-  async function loadGemData(totalSupply) {
-    for (let i = 0; i < totalSupply; i++) {
-      const newGemColorData = await gemsContract.methods.getGemColorOverview(i).call();                        
-      const newGemCutData = await gemsContract.methods.getGemOverview(i).call();                        
-      const gemOwner = await gemsContract.methods.ownerOf(i).call();
-      setComplexGemData(prevState => [...prevState, {id: i, owner: gemOwner, colorData: newGemColorData, cutData: newGemCutData}]);
-    }
-    return complexGemData;
-  }
   
   const updateGemName = e => {
     e.preventDefault();
@@ -94,7 +92,7 @@ function App() {
               style={{display: 'flex', width: '100%', backgroundColor: 'lightgrey', margin: '0'}} 
               spacing={0} 
               align="center" 
-             justify="center">
+              justify="center">
                 {complexGemData.map((gem, index) => (
                   <Grid item key={index}>
                     <div>
